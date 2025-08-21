@@ -2,8 +2,12 @@ import 'package:get/get.dart';
 
 import '../modules/counter/bindings/counter_binding.dart';
 import '../modules/counter/views/counter_view.dart';
+import '../modules/formulir/bindings/formulir_binding.dart';
+import '../modules/formulir/views/formulir_view.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/counter_view.dart';
+import '../modules/penjualan/bindings/penjualan_binding.dart';
+import '../modules/penjualan/views/penjualan_view.dart';
 
 part 'app_routes.dart';
 
@@ -20,8 +24,18 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.COUNTER,
-      page: () => const CounterView(),
+      page: () => CounterView(),
       binding: CounterBinding(),
+    ),
+    GetPage(
+      name: _Paths.FORMULIR,
+      page: () =>  FormulirView(),
+      binding: FormulirBinding(),
+    ),
+    GetPage(
+      name: _Paths.PENJUALAN,
+      page: () =>  PenjualanView(),
+      binding: PenjualanBinding(),
     ),
   ];
 }

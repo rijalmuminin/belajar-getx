@@ -1,9 +1,13 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/counter_controller.dart';
 
 class CounterView extends GetView<CounterController> {
-  const CounterView({Key? key}) : super(key: key);
+  CounterView({super.key});
+
+  CounterController controller = Get.put(CounterController());
 
   @override
   Widget build(BuildContext context) {
@@ -17,9 +21,18 @@ class CounterView extends GetView<CounterController> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Obx(
-              () => Text(
-                controller.count.toString(),
-                style: const TextStyle(fontSize: 20),
+              () => AnimatedDefaultTextStyle(
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+                style: TextStyle(
+                  fontSize: 20 + controller.count.value * 5.0,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blue,
+                ),
+                child: Text(
+                  controller.count.value.toString(),
+                  key: ValueKey(controller.count.value),
+                ),
               ),
             ),
             const SizedBox(height: 20),
@@ -30,7 +43,7 @@ class CounterView extends GetView<CounterController> {
                   onPressed: () => controller.tambah(),
                   child: const Text('Tambah'),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: 20),
                 ElevatedButton(
                   onPressed: () => controller.kurang(),
                   child: const Text('Kurang'),

@@ -1,133 +1,131 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import '../controllers/penjualan_controller.dart';
 import 'penjualan_output_view.dart';
 
 class PenjualanView extends StatelessWidget {
   PenjualanView({super.key});
-  final penjualan = Get.put(PenjualanController());
 
-  Widget _buildTextField({
-    required TextEditingController controller,
-    required String label,
-    IconData? icon,
-    TextInputType keyboardType = TextInputType.text,
-    List<TextInputFormatter>? inputFormatters,
-  }) {
-    return TextField(
-      controller: controller,
-      keyboardType: keyboardType,
-      inputFormatters: inputFormatters,
-      decoration: InputDecoration(
-        labelText: label,
-        prefixIcon: icon != null ? Icon(icon) : null,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-        filled: true,
-        fillColor: Colors.grey[100],
-      ),
-    );
-  }
+  final PenjualanController controller = Get.put(PenjualanController());
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[200],
+      backgroundColor: Colors.grey[100],
       appBar: AppBar(
         title: const Text("Form Penjualan Barang"),
         centerTitle: true,
-        elevation: 0,
+        backgroundColor: Colors.blue.shade600,
+        elevation: 2,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Card(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-            elevation: 6,
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                children: [
-                  _buildTextField(
-                    controller: penjualan.namaBarangController,
-                    label: "Nama Barang",
-                    icon: Icons.inventory_2,
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Card(
+          elevation: 4,
+          shadowColor: Colors.black26,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              children: [
+                /// Judul Form
+                Text(
+                  "Input Data Penjualan",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue.shade700,
                   ),
-                  const SizedBox(height: 12),
-                  _buildTextField(
-                    controller: penjualan.jumlahController,
-                    label: "Jumlah",
-                    icon: Icons.format_list_numbered,
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                ),
+                const SizedBox(height: 24),
+
+                /// Nama Barang
+                TextField(
+                  controller: controller.namaBarangC,
+                  decoration: InputDecoration(
+                    labelText: "Nama Barang",
+                    prefixIcon: const Icon(Icons.shopping_bag),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
-                  const SizedBox(height: 12),
-                  _buildTextField(
-                    controller: penjualan.hargaController,
-                    label: "Harga per Unit",
-                    icon: Icons.attach_money,
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                ),
+                const SizedBox(height: 16),
+
+                /// Jumlah
+                TextField(
+                  controller: controller.jumlahC,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    labelText: "Jumlah",
+                    prefixIcon: const Icon(Icons.format_list_numbered),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
-                  const SizedBox(height: 12),
-                  Obx(
-                    () => DropdownButtonFormField<String>(
-                      value: penjualan.kategori.value.isEmpty
-                          ? null
-                          : penjualan.kategori.value,
+                ),
+                const SizedBox(height: 16),
+
+                /// Harga per Unit
+                TextField(
+                  controller: controller.hargaC,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    labelText: "Harga per Unit",
+                    prefixIcon: const Icon(Icons.price_change),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+
+                /// Kategori
+                Obx(() => DropdownButtonFormField<String>(
                       decoration: InputDecoration(
                         labelText: "Kategori Barang",
+                        prefixIcon: const Icon(Icons.category),
                         border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12)),
-                        filled: true,
-                        fillColor: Colors.grey[100],
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                       ),
-                      items: penjualan.kategoriList
-                          .map(
-                            (item) => DropdownMenuItem(
-                              value: item,
-                              child: Text(item),
-                            ),
-                          )
-                          .toList(),
+                      value: controller.kategori.value.isEmpty
+                          ? null
+                          : controller.kategori.value,
+                      items: controller.kategoriList.map((e) {
+                        return DropdownMenuItem(value: e, child: Text(e));
+                      }).toList(),
                       onChanged: (val) {
-                        if (val != null) penjualan.kategori.value = val;
+                        controller.kategori.value = val!;
                       },
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton.icon(
-                      onPressed: () {
-                        if (penjualan.namaBarangController.text.isEmpty ||
-                            penjualan.jumlahController.text.isEmpty ||
-                            penjualan.hargaController.text.isEmpty ||
-                            penjualan.kategori.value.isEmpty) {
-                          Get.snackbar(
-                            "Peringatan",
-                            "Semua field harus diisi!",
-                            snackPosition: SnackPosition.BOTTOM,
-                          );
-                          return;
-                        }
+                    )),
+                const SizedBox(height: 28),
 
-                        penjualan.hitungTotal();
-                        Get.to(() => PenjualanOutputView());
-                      },
-                      icon: const Icon(Icons.shopping_cart),
-                      label: const Text("Proses"),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12)),
+                /// Tombol Submit
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      controller.hitungTotal();
+                      Get.to(() => OutputView());
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue.shade600,
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
                       ),
                     ),
+                    icon: const Icon(Icons.check_circle, color: Colors.white),
+                    label: const Text(
+                      "Submit",
+                      style: TextStyle(fontSize: 16, color: Colors.white),
+                    ),
                   ),
-                ],
-              ),
+                )
+              ],
             ),
           ),
         ),

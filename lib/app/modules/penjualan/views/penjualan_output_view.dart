@@ -3,117 +3,123 @@ import 'package:get/get.dart';
 import '../controllers/penjualan_controller.dart';
 import 'penjualan_view.dart';
 
-class PenjualanOutputView extends StatelessWidget {
-  PenjualanOutputView({super.key});
-  final penjualan = Get.find<PenjualanController>();
+class OutputView extends StatelessWidget {
+  OutputView({super.key});
 
-  Widget _buildInfoRow(String label, String value, {bool isBold = false}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
-              color: Colors.black87,
-            ),
-          ),
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
-              color: Colors.black87,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _divider() {
-    return const Divider(thickness: 1, color: Colors.black26, height: 10);
-  }
+  final PenjualanController controller = Get.find<PenjualanController>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[200],
+      backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        title: const Text("Struk Belanjaan"),
+        title: const Text("Output Penjualan"),
         centerTitle: true,
-        elevation: 0,
+        backgroundColor: Colors.blue.shade600,
+        elevation: 2,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Obx(
-          () => Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
-              boxShadow: const [
-                BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3)),
-              ],
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const Center(
-                  child: Text(
-                    "📦 TOKO SAGALA AYA",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                ),
-                const SizedBox(height: 4),
-                const Center(
-                  child: Text(
-                    "Jl. Situ tarate",
-                    style: TextStyle(fontSize: 12, color: Colors.black54),
-                  ),
-                ),
-                const SizedBox(height: 10),
-                _divider(),
-                _buildInfoRow("Nama Barang", penjualan.namaBarangController.text),
-                _buildInfoRow("Kategori", penjualan.kategori.value),
-                _buildInfoRow("Jumlah", penjualan.jumlahController.text),
-                _buildInfoRow("Harga/Unit", "Rp ${penjualan.hargaController.text}"),
-                _divider(),
-                _buildInfoRow("Total Sebelum Diskon", penjualan.formattedTotalSebelumDiskon,
-                    isBold: true),
-                _buildInfoRow("Diskon", penjualan.formattedDiskon),
-                _buildInfoRow("Total Bayar", penjualan.formattedTotalSetelahDiskon,
-                    isBold: true),
-                _divider(),
-                const SizedBox(height: 10),
-                const Center(
-                  child: Text(
-                    "Terima kasih telah berbelanja!",
-                    style: TextStyle(fontSize: 12, color: Colors.black54),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () {
-                    penjualan.resetForm();
-                    Get.off(() => PenjualanView());
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+        padding: const EdgeInsets.all(16),
+        child: Obx(() => Card(
+              elevation: 4,
+              shadowColor: Colors.black26,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    /// Judul
+                    Center(
+                      child: Text(
+                        "Hasil Penjualan",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blue.shade700,
+                        ),
+                      ),
                     ),
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                  ),
-                  child: const Text("Kembali & Reset"),
+                    const SizedBox(height: 16),
+                    const Divider(),
+
+                    /// Data Output
+                    buildItem("Nama Barang", controller.namaBarangC.text),
+                    buildItem("Kategori", controller.kategori.value),
+                    buildItem("Jumlah", controller.jumlahC.text),
+                    buildItem("Harga per Unit", "Rp ${controller.hargaC.text}"),
+                    buildItem(
+                        "Total Sebelum Diskon", "Rp ${controller.total.value}"),
+                    buildItem("Total Setelah Diskon",
+                        "Rp ${controller.totalDiskon.value}"),
+
+                    const SizedBox(height: 24),
+                    const Divider(),
+                    const SizedBox(height: 16),
+
+                    /// Tombol Aksi
+                    Row(
+                      children: [
+                        Expanded(
+                          child: ElevatedButton.icon(
+                            onPressed: () {
+                              Get.back();
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.grey.shade500,
+                              padding: const EdgeInsets.symmetric(vertical: 14),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            icon: const Icon(Icons.arrow_back),
+                            label: const Text("Kembali"),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: ElevatedButton.icon(
+                            onPressed: () {
+                              controller.resetForm();
+                              Get.off(() => PenjualanView());
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.red.shade500,
+                              padding: const EdgeInsets.symmetric(vertical: 14),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            icon: const Icon(Icons.refresh),
+                            label: const Text("Reset"),
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
                 ),
-              ],
-            ),
-          ),
-        ),
+              ),
+            )),
+      ),
+    );
+  }
+
+  /// Widget Helper buat item data
+  Widget buildItem(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(label,
+              style:
+                  const TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+          Text(value,
+              style:
+                  const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+        ],
       ),
     );
   }

@@ -26,6 +26,18 @@ class HomeView extends GetView<HomeController> {
         "route": "/penjualan", // nanti pastikan route ini ada di app_pages.dart
         "color": Colors.orange,
       },
+      {
+        "title": "Posts",
+        "icon": Icons.list,
+        "route": "/posts", // nanti pastikan route ini ada di app_pages.dart
+        "color": Colors.blueAccent,
+      },
+      {
+        "title": "Album",
+        "icon": Icons.album,
+        "route": "/posts", // nanti pastikan route ini ada di app_pages.dart
+        "color": Colors.green,
+      },
     ];
 
     return Scaffold(

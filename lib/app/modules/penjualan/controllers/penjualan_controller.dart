@@ -1,62 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 
 class PenjualanController extends GetxController {
-  final namaBarangController = TextEditingController();
-  final jumlahController = TextEditingController();
-  final hargaController = TextEditingController();
+  final namaBarangC = TextEditingController();
+  final jumlahC = TextEditingController();
+  final hargaC = TextEditingController();
 
   var kategori = "".obs;
-  var totalSebelumDiskon = 0.0.obs;
-  var totalSetelahDiskon = 0.0.obs;
+  var total = 0.0.obs;
+  var totalDiskon = 0.0.obs;
 
-  List<String> kategoriList = ["Makanan", "Minuman", "Alat Tulis"];
-
-  final NumberFormat currencyFormat = NumberFormat.currency(
-    locale: "id_ID",
-    symbol: "Rp ",
-    decimalDigits: 0,
-  );
-
-  // Getter formatted
-  String get formattedTotalSebelumDiskon =>
-      currencyFormat.format(totalSebelumDiskon.value);
-
-  String get formattedTotalSetelahDiskon =>
-      currencyFormat.format(totalSetelahDiskon.value);
-
-  double get diskon => totalSebelumDiskon.value - totalSetelahDiskon.value;
-
-  String get formattedDiskon => currencyFormat.format(diskon);
+  final List<String> kategoriList = [
+    "Makanan",
+    "Minuman",
+    "Alat Tulis",
+  ];
 
   void hitungTotal() {
-    int jumlah = int.tryParse(jumlahController.text) ?? 0;
-    double harga = double.tryParse(hargaController.text) ?? 0.0;
+    final jumlah = int.tryParse(jumlahC.text) ?? 0;
+    final harga = double.tryParse(hargaC.text) ?? 0.0;
+    total.value = jumlah * harga;
 
-    totalSebelumDiskon.value = jumlah * harga;
-
-    if (totalSebelumDiskon.value >= 100000) {
-      totalSetelahDiskon.value = totalSebelumDiskon.value * 0.9;
+    if (total.value >= 100000) {
+      totalDiskon.value = total.value * 0.9; // diskon 10%
     } else {
-      totalSetelahDiskon.value = totalSebelumDiskon.value;
+      totalDiskon.value = total.value;
     }
   }
 
   void resetForm() {
-    namaBarangController.clear();
-    jumlahController.clear();
-    hargaController.clear();
+    namaBarangC.clear();
+    jumlahC.clear();
+    hargaC.clear();
     kategori.value = "";
-    totalSebelumDiskon.value = 0.0;
-    totalSetelahDiskon.value = 0.0;
-  }
-
-  @override
-  void onClose() {
-    namaBarangController.dispose();
-    jumlahController.dispose();
-    hargaController.dispose();
-    super.onClose();
+    total.value = 0.0;
+    totalDiskon.value = 0.0;
   }
 }
